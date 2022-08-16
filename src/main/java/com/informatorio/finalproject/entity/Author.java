@@ -25,7 +25,7 @@ public class Author {
     private LocalDate createdAt;
 
     @OneToMany(mappedBy = "author",cascade = CascadeType.ALL)
-    @JsonIgnore
+    //@JsonIgnore
     private List<Article> articles = new ArrayList<>();
 
     public Author(Long id, String firstName, String lastName, String fullName, LocalDate createdAt) {
