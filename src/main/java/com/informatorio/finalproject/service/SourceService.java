@@ -23,27 +23,25 @@ public class SourceService {
         this.sourceConverter = sourceConverter;
     }
 
-    private SourceDTO toDTO(Source source){
-        SourceDTO sourceDTO = new SourceDTO();
 
-        sourceDTO.setId(source.getId());
-        sourceDTO.setCode(source.getCode());
-        sourceDTO.setName(source.getName());
-        sourceDTO.setCreatedAt(source.getCreatedAt());
-        return sourceDTO;
-    }
 
     public boolean saveSource(SourceDTO sourceDTO){
-        Source source = sourceConverter.convert(sourceDTO);
+        Source source = sourceConverter.toEntity(sourceDTO);
         sourceRepository.save(source);
         return true;
 
     }
 
-    public List<SourceDTO> getAllSources(){
+    public Source updateSource(SourceDTO sourceDTO){
+        Source source = sourceConverter.toEntity(sourceDTO);
+        sourceRepository.save(source);
+        return source;
+    }
+
+    /*public List<SourceDTO> getAllSources(){
         return sourceRepository.findAll()
                 .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
-    }
+    }*/
 }

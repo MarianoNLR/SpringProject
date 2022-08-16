@@ -28,26 +28,12 @@ public class ArticleService {
         this.authorService = authorService;
     }
 
-    public List<ArticleDTO> getArticles(){
+    /*public List<ArticleDTO> getArticles(){
 
         return articleRepository.findAll()
                 .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
-    }
+    }*/
 
-    private ArticleDTO toDTO(Article article){
-        ArticleDTO articleDTO = new ArticleDTO();;
-        articleDTO.setId(article.getId());
-        articleDTO.setTitle(article.getTitle());
-        articleDTO.setContent(article.getContent());
-        articleDTO.setDescription(article.getDescription());
-        articleDTO.setUrl(article.getUrl());
-        articleDTO.setUrlToImage(article.getUrlToImage());
-        articleDTO.setPublishedAt(article.getPublishedAt());
-        Optional<Author> authorOptional = authorRepository.findById(article.getAuthor().getId());
-        articleDTO.setAuthor(authorOptional.get().getFullName());
-        articleDTO.setSources(article.getSources());
-        return articleDTO;
-    }
 }
