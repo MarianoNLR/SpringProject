@@ -1,5 +1,6 @@
 package com.informatorio.finalproject.service;
 
+import com.informatorio.finalproject.converter.SourceConverter;
 import com.informatorio.finalproject.dto.SourceDTO;
 import com.informatorio.finalproject.entity.Source;
 import com.informatorio.finalproject.repository.SourceRepository;
@@ -13,10 +14,13 @@ public class SourceService {
 
     private SourceRepository sourceRepository;
 
+    private final SourceConverter sourceConverter;
 
 
-    public SourceService(SourceRepository sourceRepository) {
+
+    public SourceService(SourceRepository sourceRepository, SourceConverter sourceConverter) {
         this.sourceRepository = sourceRepository;
+        this.sourceConverter = sourceConverter;
     }
 
     private SourceDTO toDTO(Source source){
@@ -27,6 +31,13 @@ public class SourceService {
         sourceDTO.setName(source.getName());
         sourceDTO.setCreatedAt(source.getCreatedAt());
         return sourceDTO;
+    }
+
+    public boolean saveSource(SourceDTO sourceDTO){
+        Source source = sourceConverter.convert(sourceDTO);
+        sourceRepository.save(source);
+        return true;
+
     }
 
     public List<SourceDTO> getAllSources(){

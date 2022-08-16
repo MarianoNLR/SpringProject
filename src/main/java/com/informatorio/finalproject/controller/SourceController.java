@@ -6,9 +6,9 @@ import com.informatorio.finalproject.entity.Source;
 import com.informatorio.finalproject.repository.SourceRepository;
 import com.informatorio.finalproject.service.SourceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,4 +23,10 @@ public class SourceController {
     public List<Source> findSource(){
         return sourceRepository.findAll();
     }
+
+    @PostMapping("/sources")
+    public ResponseEntity<?> createSource(@RequestBody SourceDTO sourceDTO){
+        return new ResponseEntity<>(sourceService.saveSource(sourceDTO), HttpStatus.OK);
+    }
+
 }

@@ -2,8 +2,10 @@ package com.informatorio.finalproject.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,8 @@ public class Source {
 
     private String code;
 
-    private String createdAt;
+    @CreationTimestamp
+    private LocalDate createdAt;
 
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "sources")
     @JsonIgnore
@@ -51,11 +54,11 @@ public class Source {
         this.code = code;
     }
 
-    public String getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
 

@@ -2,6 +2,7 @@ package com.informatorio.finalproject.dto;
 
 import com.informatorio.finalproject.entity.Article;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,10 +12,10 @@ public class SourceDTO {
 
     private String code;
 
-    private String createdAt;
+    private LocalDate createdAt;
 
 
-    public SourceDTO(long id, String name, String code, String createdAt) {
+    public SourceDTO(long id, String name, String code, LocalDate createdAt) {
         this.id = id;
         this.name = name;
         this.code = code;
@@ -48,13 +49,11 @@ public class SourceDTO {
         this.code = code;
     }
 
-    public String getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
-
-
 }
