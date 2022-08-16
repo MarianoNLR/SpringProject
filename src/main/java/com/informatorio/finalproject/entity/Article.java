@@ -33,7 +33,7 @@ public class Article {
     @JoinColumn(name = "author_id")
     private Author author = new Author();
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "article_sources",
     joinColumns = {@JoinColumn(name = "articles_id")},
     inverseJoinColumns = {@JoinColumn(name = "sources_id")})
