@@ -15,20 +15,20 @@ public class AuthorDTO {
     private String firstName;
     @NotBlank
     private String lastName;
-    @NotBlank
+
     private String fullName;
 
     private LocalDate createdAt;
 
-    private List<Article> articles;
+    //private List<Article> articles;
 
-    public AuthorDTO(Long id, String firstName, String lastName, String fullName, LocalDate createdAt, List<Article> articles) {
+    public AuthorDTO(Long id, String firstName, String lastName, LocalDate createdAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.fullName = fullName;
+        this.fullName = firstName + " " + lastName;
         this.createdAt = createdAt;
-        this.articles = articles;
+        //this.articles = articles;
     }
 
     public AuthorDTO() {
@@ -74,13 +74,6 @@ public class AuthorDTO {
         this.createdAt = createdAt;
     }
 
-    public List<Article> getArticles() {
-        return articles;
-    }
-
-    public void setArticles(List<Article> articles) {
-        this.articles = articles;
-    }
 
     @Override
     public boolean equals(Object o) {

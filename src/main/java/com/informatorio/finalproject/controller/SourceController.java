@@ -22,36 +22,20 @@ import java.util.stream.Collectors;
 @RestController
 public class SourceController {
 
-    SourceRepository sourceRepository;
-
-    SourceConverter sourceConverter;
     SourceService sourceService;
     @Autowired
-    public SourceController(SourceRepository sourceRepository, SourceConverter sourceConverter, SourceService sourceService) {
-        this.sourceRepository = sourceRepository;
-        this.sourceConverter = sourceConverter;
+    public SourceController(SourceService sourceService) {
         this.sourceService = sourceService;
     }
 
     @RequestMapping(value = "/sources", method = RequestMethod.GET)
-    public ResponseEntity<?> getSources(@RequestParam int page){
-        PageRequest pageable = PageRequest.of(page, 3);
-        Page<Source> pageResult = sourceRepository.findAll(pageable);
-
-        Map<String, Object> customPage = new HashMap<>();
-        customPage.put("status", HttpStatus.OK);
-        customPage.put("content", pageResult.getContent().stream()
-                .map(article -> sourceConverter.toDto(article))
-                .collect(Collectors.toList()));
-        customPage.put("page", pageResult.getNumber());
-        customPage.put("size", pageResult.getSize());
-        customPage.put("totalElements", pageResult.getTotalElements());
-
-        return new ResponseEntity<>(customPage, HttpStatus.OK);
+    public ResponseEntity<?> getSources(@RequestParam(required = false, defaultValue = "0") int page, @RequestParam(required = false, defaultValue = "") String name){
+        name = name.replace("-", " ");
+        return new ResponseEntity<>(sourceService.getAllSources(page, name), HttpStatus.OK);
 
     }
 
-    @PostMapping("/sources")
+    @PostMapping("/sources/add")
     public ResponseEntity<?> createSource(@RequestBody SourceDTO sourceDTO){
         return new ResponseEntity<>(sourceService.saveSource(sourceDTO), HttpStatus.OK);
     }
@@ -60,5 +44,6 @@ public class SourceController {
     public Source updateSource(@RequestBody SourceDTO sourceDTO){
         return sourceService.updateSource(sourceDTO);
     }
+
 
 }

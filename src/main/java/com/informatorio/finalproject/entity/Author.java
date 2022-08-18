@@ -2,6 +2,7 @@ package com.informatorio.finalproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -21,11 +22,12 @@ public class Author {
 
     private String fullName;
 
+
     @CreationTimestamp
     private LocalDate createdAt;
 
     @OneToMany(mappedBy = "author",cascade = CascadeType.ALL)
-    //@JsonIgnore
+    @JsonIgnore
     private List<Article> articles = new ArrayList<>();
 
     public Author(Long id, String firstName, String lastName, String fullName, LocalDate createdAt) {

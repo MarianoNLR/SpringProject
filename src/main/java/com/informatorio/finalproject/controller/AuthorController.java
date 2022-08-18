@@ -6,17 +6,16 @@ import com.informatorio.finalproject.entity.Author;
 import com.informatorio.finalproject.repository.AuthorRepository;
 import com.informatorio.finalproject.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 public class AuthorController {
@@ -35,33 +34,26 @@ public class AuthorController {
 
     @PostMapping("/authors")
     public ResponseEntity<?> createAuthor(@Valid @RequestBody AuthorDTO authorDTO){
-        Author author = authorConverter.toEntity(authorDTO);
-        author = authorRepository.save(author);
-        return new ResponseEntity<>(authorConverter.toDto(author), HttpStatus.CREATED);
+
+        return new ResponseEntity<>(authorService.createAuthor(authorDTO), HttpStatus.CREATED);
     }
 
     @GetMapping("/authors")
-    public ResponseEntity<?>getAuthors(@RequestParam int page){
-        PageRequest pageable = PageRequest.of(page, 3);
-        Page<Author> pageResult = authorRepository.findAll(pageable);
+    public ResponseEntity<?>getAuthors(@RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(required = false, defaultValue = "") String name,
+                                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate after){
+        return new ResponseEntity<>(authorService.getAllAuthors(page, name, after), HttpStatus.OK);
 
-        Map<String, Object> customPage = new HashMap<>();
-        customPage.put("content", pageResult.getContent().stream()
-                .map(author -> authorConverter.toDto(author))
-                .collect(Collectors.toList()));
-        customPage.put("page", pageResult.getNumber());
-        customPage.put("size", pageResult.getSize());
-        customPage.put("totalElements", pageResult.getTotalElements());
 
-        return new ResponseEntity<>(customPage, HttpStatus.OK);
 
     }
 
     @GetMapping("/authors/{id}")
     public ResponseEntity<?>findById(@PathVariable Long id){
-        Optional<Author> author = authorRepository.findById(id);
-        if (author.isPresent()){
-            return new ResponseEntity<>(authorConverter.toDto(author.get()), HttpStatus.OK);
+        //Optional<Author> author = authorService.getAuthor(id);
+        AuthorDTO authorDTO = authorService.getAuthor(id);
+        if (authorDTO != null){
+            return new ResponseEntity<>(authorDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -78,10 +70,10 @@ public class AuthorController {
         }
     }
 
-   /*@PutMapping("/authors")
-    public Author updateAuthor(@RequestBody AuthorDTO authorDTO){
+   @PutMapping("/authors")
+    public AuthorDTO updateAuthor(@RequestBody @Valid AuthorDTO authorDTO){
         return authorService.updateAuthor(authorDTO);
-    }*/
+    }
 
 
 

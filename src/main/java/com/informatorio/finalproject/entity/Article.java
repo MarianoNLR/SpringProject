@@ -2,6 +2,7 @@ package com.informatorio.finalproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -28,7 +29,7 @@ public class Article {
     private LocalDate publishedAt;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "author_id")
     private Author author = new Author();
@@ -112,5 +113,10 @@ public class Article {
 
     public void setSources(List<Source> sources) {
         this.sources = sources;
+    }
+
+    public void addSource(Source source){
+        sources.add(source);
+        source.getArticles().add(this);
     }
 }

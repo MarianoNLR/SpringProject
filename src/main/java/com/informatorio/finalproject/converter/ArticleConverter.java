@@ -8,14 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Component
 public class ArticleConverter {
 
-    @Autowired
+
     private final AuthorRepository authorRepository;
 
-    public ArticleConverter(AuthorRepository authorRepository) {
+    private final AuthorConverter authorConverter;
+
+    private final SourceConverter sourceConverter;
+    @Autowired
+    public ArticleConverter(AuthorRepository authorRepository, AuthorConverter authorConverter, SourceConverter sourceConverter) {
         this.authorRepository = authorRepository;
+        this.authorConverter = authorConverter;
+        this.sourceConverter = sourceConverter;
     }
 
     public Article toEntity(ArticleDTO articleDTO){
@@ -26,9 +34,9 @@ public class ArticleConverter {
         article.setDescription(articleDTO.getDescription());
         article.setUrl(articleDTO.getUrl());
         article.setUrlToImage(articleDTO.getUrlToImage());
-        Optional<Author> authorOptional = authorRepository.findById(article.getAuthor().getId());
+        article.setPublishedAt(articleDTO.getPublishedAt());
+        Optional<Author> authorOptional = authorRepository.findById(articleDTO.getAuthor().getId());
         article.setAuthor(authorOptional.get());
-        article.setSources(articleDTO.getSources());
 
         return article;
     }
@@ -43,8 +51,10 @@ public class ArticleConverter {
         articleDTO.setUrlToImage(article.getUrlToImage());
         articleDTO.setPublishedAt(article.getPublishedAt());
         Optional<Author> authorOptional = authorRepository.findById(article.getAuthor().getId());
-        articleDTO.setAuthor(authorOptional.get().getFullName());
-        articleDTO.setSources(article.getSources());
+        articleDTO.setAuthor(authorConverter.toDto(authorOptional.get()));
+        articleDTO.setSources(article.getSources().stream()
+                .map(source -> sourceConverter.toDto(source))
+                .collect(Collectors.toList()));
         return articleDTO;
     }
 

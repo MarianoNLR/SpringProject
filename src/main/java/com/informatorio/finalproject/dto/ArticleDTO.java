@@ -24,9 +24,9 @@ public class ArticleDTO {
 
     private LocalDate publishedAt;
 
-    private String author;
+    private AuthorDTO authorDTO;
 
-    private List<Source> sources = new ArrayList<>();
+    private List<SourceDTO> sources = new ArrayList<>();
 
 
     public long getId() {
@@ -85,19 +85,19 @@ public class ArticleDTO {
         this.publishedAt = publishedAt;
     }
 
-    public String getAuthor() {
-        return author;
+    public AuthorDTO getAuthor() {
+        return authorDTO;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setAuthor(AuthorDTO authorDTO) {
+        this.authorDTO = authorDTO;
     }
 
-    public List<Source> getSources() {
+    public List<SourceDTO> getSources() {
         return sources;
     }
 
-    public void setSources(List<Source> sources) {
+    public void setSources(List<SourceDTO> sources) {
         this.sources = sources;
     }
 

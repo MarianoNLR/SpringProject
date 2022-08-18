@@ -15,7 +15,7 @@ public class AuthorConverter {
         author.setLastName(authorDTO.getLastName());
         author.setFullName(authorDTO.getFullName());
         author.setCreatedAt(authorDTO.getCreatedAt());
-        author.setArticles(authorDTO.getArticles());
+        //author.setArticles(authorDTO.getArticles());
         return author;
     }
 
@@ -26,7 +26,7 @@ public class AuthorConverter {
         authorDTO.setLastName(author.getLastName());
         authorDTO.setFullName(author.getFullName());
         authorDTO.setCreatedAt(author.getCreatedAt());
-        authorDTO.setArticles(author.getArticles());
+        //authorDTO.setArticles(author.getArticles());
         return authorDTO;
     }
 }
