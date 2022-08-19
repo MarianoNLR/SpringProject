@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -70,10 +71,25 @@ public class AuthorService {
             authorAux.setLastName(authorDTO.getLastName());
             this.setFullName(authorDTO);
             authorAux.setFullName(authorDTO.getFullName());
+
             return authorRepository.save(authorAux);
 
         }
         return null;
+    }
+
+    public Author patchAuthor(AuthorDTO authorDTO, Long id){
+        Author author = authorRepository.findById(id).orElse(null);
+
+        if(StringUtils.hasLength(authorDTO.getFirstName())){
+            author.setFirstName(authorDTO.getFirstName());
+        }
+        if(StringUtils.hasLength(authorDTO.getLastName())){
+            author.setLastName(authorDTO.getLastName());
+        }
+        author.setFullName(author.getFirstName() + " " + author.getLastName());
+
+        return authorRepository.save(author);
     }
 
     public Author createAuthor(AuthorDTO authorDTO){

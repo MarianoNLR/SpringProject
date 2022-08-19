@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,6 +38,13 @@ public class AuthorController {
     public ResponseEntity<?> createAuthor(@Valid @RequestBody AuthorDTO authorDTO){
 
         return new ResponseEntity<>(authorService.createAuthor(authorDTO), HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/authors/{id}")
+    public ResponseEntity<?>patchAuthor(@PathVariable Long id, @RequestBody AuthorDTO authorDTO){
+        Author author = authorService.patchAuthor(authorDTO, id);
+
+        return new ResponseEntity<>(authorConverter.toDto(author), HttpStatus.OK);
     }
 
     @GetMapping("/authors")

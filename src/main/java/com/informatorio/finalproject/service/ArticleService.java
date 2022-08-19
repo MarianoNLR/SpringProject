@@ -11,7 +11,9 @@ import com.informatorio.finalproject.util.CustomPage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -88,19 +90,35 @@ public class ArticleService {
             articleAux.setUrlToImage(articleDTO.getUrlToImage());
             articleAux.setPublishedAt(articleDTO.getPublishedAt());
             return articleRepository.save(articleAux);
-
         }
 
         return null;
     }
 
+    public Article patchArticle(ArticleDTO articleDTO, Long id){
+        Article article = articleRepository.findById(id).orElse(null);
+
+        if(StringUtils.hasLength(articleDTO.getTitle()))
+            article.setTitle(articleDTO.getTitle());
+        if(StringUtils.hasLength(articleDTO.getDescription()))
+            article.setDescription(articleDTO.getDescription());
+        if(StringUtils.hasLength(articleDTO.getContent()))
+            article.setContent(articleDTO.getContent());
+        if(StringUtils.hasLength(articleDTO.getUrl()))
+            article.setUrl(articleDTO.getUrl());
+        if(StringUtils.hasLength(articleDTO.getUrlToImage()))
+            article.setUrlToImage(articleDTO.getUrlToImage());
+
+        return articleRepository.save(article);
+    }
+
     public boolean deleteArticle(Long id){
         Optional<Article> article = articleRepository.findById(id);
         if(article.isPresent()){
-            for (Source source :  article.get().getSources()){
-                article.get().getSources().remove(source);
-            }
-            articleRepository.delete(article.get());
+            List<Source> sources = new ArrayList<>();
+            sources.addAll(article.get().getSources());
+            article.get().getSources().removeAll(sources);
+            articleRepository.deleteById(article.get().getId());
             return true;
         }
 

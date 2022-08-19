@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -63,6 +64,14 @@ public class ArticleController {
         }else{
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PatchMapping("articles/{id}")
+    public ResponseEntity<?> patchArticle(@PathVariable Long id, @Valid @RequestBody ArticleDTO articleDTO){
+
+        Article article = articleService.patchArticle(articleDTO, id);
+        return new ResponseEntity<>(articleConverter.toDto(article), HttpStatus.OK);
+
     }
 
     @DeleteMapping("articles/{id}")
