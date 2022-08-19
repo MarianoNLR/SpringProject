@@ -14,11 +14,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
+@RequestMapping("/api/v1")
 @RestController
 public class SourceController {
 
@@ -40,9 +41,22 @@ public class SourceController {
         return new ResponseEntity<>(sourceService.saveSource(sourceDTO), HttpStatus.OK);
     }
 
-    @PutMapping("/sources")
-    public Source updateSource(@RequestBody SourceDTO sourceDTO){
-        return sourceService.updateSource(sourceDTO);
+    @PutMapping("/sources/{id}")
+    public ResponseEntity<?> updateSource(@PathVariable Long id ,@Valid @RequestBody SourceDTO sourceDTO) {
+
+        SourceDTO sourceDTOAux = sourceService.updateSource(sourceDTO, id);
+
+        if (sourceDTOAux != null){
+            return new ResponseEntity<>(sourceDTOAux, HttpStatus.ACCEPTED);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("sources/{id}")
+    public boolean deleteSource(@PathVariable Long id){
+        return sourceService.deleteSource(id);
     }
 
 

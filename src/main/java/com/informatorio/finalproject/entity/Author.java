@@ -26,7 +26,7 @@ public class Author {
     @CreationTimestamp
     private LocalDate createdAt;
 
-    @OneToMany(mappedBy = "author",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Article> articles = new ArrayList<>();
 

@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+@RequestMapping("/api/v1")
 @RestController
 public class AuthorController {
 
@@ -70,9 +71,17 @@ public class AuthorController {
         }
     }
 
-   @PutMapping("/authors")
-    public AuthorDTO updateAuthor(@RequestBody @Valid AuthorDTO authorDTO){
-        return authorService.updateAuthor(authorDTO);
+   @PutMapping("/authors/{id}")
+    public ResponseEntity<?> updateAuthor(@PathVariable Long id ,@RequestBody @Valid AuthorDTO authorDTO){
+        AuthorDTO authorDTOAux = authorService.updateAuthor(authorDTO, id);
+
+        if(authorDTOAux != null){
+            return new ResponseEntity<>(authorDTOAux, HttpStatus.ACCEPTED);
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
     }
 
 

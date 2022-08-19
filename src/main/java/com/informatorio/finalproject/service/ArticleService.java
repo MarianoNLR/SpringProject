@@ -96,20 +96,41 @@ public class ArticleService {
         return articleConverter.toDto(article);
     }
 
-    /*public List<SourceDTO> addSourceToArticle(ArticleDTO articleDTO){
-        List<Source> sources =
+    public ArticleDTO updateArticle(ArticleDTO articleDTO, Long id){
+        Optional<Article> article = articleRepository.findById(id);
+        if (article.isPresent()){
+            Article articleAux = article.get();
+            articleAux.setTitle(articleDTO.getTitle());
+            articleAux.setDescription(articleDTO.getDescription());
+            articleAux.setContent(articleDTO.getContent());
+            articleAux.setUrl(articleDTO.getUrl());
+            articleAux.setUrlToImage(articleDTO.getUrlToImage());
+            articleAux.setPublishedAt(articleDTO.getPublishedAt());
+            articleRepository.save(articleAux);
+            articleDTO = articleConverter.toDto(articleAux);
+            return articleDTO;
+        }
 
-        return sources.stream().map(source -> sourceConverter.toDto(source)).collect(Collectors.toList());
-    }*/
+        return null;
+    }
+
+    public boolean deleteArticle(Long id){
+        Optional<Article> article = articleRepository.findById(id);
+        if(article.isPresent()){
+            for (Source source :  article.get().getSources()){
+                article.get().getSources().remove(source);
+            }
+            articleRepository.delete(article.get());
+            return true;
+        }
+        return false;
+
+
+    }
+
+
 }
 
-    /*public List<ArticleDTO> getArticles(){
-
-        return articleRepository.findAll()
-                .stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
-    }*/
 
 
 

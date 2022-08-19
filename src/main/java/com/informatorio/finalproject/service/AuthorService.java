@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,12 +53,18 @@ public class AuthorService {
 
 
 
-    public AuthorDTO updateAuthor(AuthorDTO authorDTO){
-        this.setFullName(authorDTO);
-        Author author = authorConverter.toEntity(authorDTO);
-        authorRepository.save(author);
-        AuthorDTO authorDTO1 = authorConverter.toDto(author);
-        return authorDTO1;
+    public AuthorDTO updateAuthor(AuthorDTO authorDTO, Long id){
+        Optional<Author> author = authorRepository.findById(id);
+        if(author.isPresent()){
+            Author authorAux = author.get();
+            authorAux.setFirstName(authorDTO.getFirstName());
+            authorAux.setLastName(authorDTO.getLastName());
+            this.setFullName(authorDTO);
+            authorAux.setFullName(authorDTO.getFullName());
+            authorRepository.save(authorAux);
+            return authorConverter.toDto(authorAux);
+        }
+        return null;
     }
 
     public AuthorDTO createAuthor(AuthorDTO authorDTO){

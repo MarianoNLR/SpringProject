@@ -2,6 +2,7 @@ package com.informatorio.finalproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.informatorio.finalproject.service.SourceService;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -118,5 +119,10 @@ public class Article {
     public void addSource(Source source){
         sources.add(source);
         source.getArticles().add(this);
+    }
+
+    public void removeSource(Source source){
+        this.sources.remove(source);
+        source.getArticles().remove(this);
     }
 }

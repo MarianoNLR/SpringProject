@@ -23,7 +23,7 @@ public class Source {
     @CreationTimestamp
     private LocalDate createdAt;
 
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "sources")
+    @ManyToMany(mappedBy = "sources")
     @JsonIgnore
     private List<Article> articles = new ArrayList<>();
 
@@ -68,5 +68,10 @@ public class Source {
 
     public void setArticles(List<Article> articles) {
         this.articles = articles;
+    }
+
+    public void removeArticle(Article article){
+        this.articles.remove(article);
+        article.getSources().remove(this);
     }
 }

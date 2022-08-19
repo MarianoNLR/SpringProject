@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDate;
 
-
+@RequestMapping("/api/v1")
 @RestController
 public class ArticleController {
 
@@ -35,7 +35,7 @@ public class ArticleController {
     }
 
     @GetMapping("/articles")
-    public ResponseEntity<?> getArticles(@RequestParam int page,
+    public ResponseEntity<?> getArticles(@RequestParam(defaultValue = "0") int page,
                                          @RequestParam(required = false, defaultValue = "") String q){
         if (!q.isBlank() && q.length()<=3){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -52,5 +52,24 @@ public class ArticleController {
     public ResponseEntity<ArticleDTO> getArticleById(@PathVariable Long id){
         //return ResponseEntity.ok(articleRepository.findById(id));
         return new ResponseEntity<>(articleService.getArticle(id), HttpStatus.OK);
+    }
+
+    @PutMapping("articles/{id}")
+    public ResponseEntity<?> updateArticle(@PathVariable Long id,@Valid @RequestBody ArticleDTO articleDTO){
+        ArticleDTO articleDTOAux = articleService.updateArticle(articleDTO, id);
+        if (articleDTOAux != null){
+            return new ResponseEntity<>(articleDTOAux, HttpStatus.ACCEPTED);
+        }else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("articles/{id}")
+    public ResponseEntity<?> deleteArticle(@PathVariable Long id){
+        if (articleService.deleteArticle(id)){
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
