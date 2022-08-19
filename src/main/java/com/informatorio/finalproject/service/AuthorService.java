@@ -5,24 +5,24 @@ import com.informatorio.finalproject.dto.AuthorDTO;
 import com.informatorio.finalproject.entity.Author;
 import com.informatorio.finalproject.repository.AuthorRepository;
 import com.informatorio.finalproject.util.CustomPage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class AuthorService {
-    private AuthorRepository authorRepository;
-    private AuthorConverter authorConverter;
+    private final AuthorRepository authorRepository;
+    private final AuthorConverter authorConverter;
 
 
 
-
+    @Autowired
     public AuthorService(AuthorRepository authorRepository, AuthorConverter authorConverter) {
         this.authorRepository = authorRepository;
         this.authorConverter = authorConverter;
@@ -30,25 +30,18 @@ public class AuthorService {
 
     public AuthorDTO getAuthor(Long id) {
         Optional<Author> author = authorRepository.findById(id);
-        if (author.isPresent()) {
-            Author authorAux = author.get();
-            return authorConverter.toDto(authorAux);
-        }
-        return null;
-        /*return authorRepository.findById(id)
-                .map(author -> authorConverter.toDto(author)).get();*/
+        //Author authorAux = author.get();
+        return author.map(authorConverter::toDto).orElse(null);
     }
 
-    public CustomPage getAllAuthors(int page, String name, LocalDate after){
+    public CustomPage getAllAuthors(int page){
         PageRequest pageable = PageRequest.of(page, 5);
         Page<Author> pageResult;
-        if (after == null){
-            after = LocalDate.ofEpochDay(0);
-        }
-        pageResult = authorRepository.findByFullNameContainsAndCreatedAtAfter(pageable, name, after);
+
+        pageResult = authorRepository.findAll(pageable);
         CustomPage customPage = new CustomPage();
         customPage.setContent(pageResult.getContent().stream()
-                .map(author -> authorConverter.toDto(author))
+                .map(authorConverter::toDto)
                 .collect(Collectors.toList()));
         customPage.setTotalElements(pageResult.getTotalElements());
         customPage.setTotalPages(pageResult.getTotalPages());
@@ -58,9 +51,18 @@ public class AuthorService {
         return customPage;
     }
 
+    public List<Author> getAuthorByFullName(String name){
+        return authorRepository.findByFullNameContains(name);
+
+    }
+
+    public List<Author> getAuthorCreatedAfter(LocalDate date){
+        return authorRepository.findByCreatedAtAfter(date);
+    }
 
 
-    public AuthorDTO updateAuthor(AuthorDTO authorDTO, Long id){
+
+    public Author updateAuthor(AuthorDTO authorDTO, Long id){
         Optional<Author> author = authorRepository.findById(id);
         if(author.isPresent()){
             Author authorAux = author.get();
@@ -68,17 +70,17 @@ public class AuthorService {
             authorAux.setLastName(authorDTO.getLastName());
             this.setFullName(authorDTO);
             authorAux.setFullName(authorDTO.getFullName());
-            authorRepository.save(authorAux);
-            return authorConverter.toDto(authorAux);
+            return authorRepository.save(authorAux);
+
         }
         return null;
     }
 
-    public AuthorDTO createAuthor(AuthorDTO authorDTO){
-        this.setFullName(authorDTO);
+    public Author createAuthor(AuthorDTO authorDTO){
+        //this.setFullName(authorDTO);
+        authorDTO.setFullName(authorDTO.getFirstName() + " " + authorDTO.getLastName());
         Author author = authorConverter.toEntity(authorDTO);
-        author = authorRepository.save(author);
-        return authorConverter.toDto(author);
+        return author = authorRepository.save(author);
     }
 
     private void setFullName(AuthorDTO authorDTO){

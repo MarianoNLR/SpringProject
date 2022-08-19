@@ -43,7 +43,14 @@ public class AuthorController {
     public ResponseEntity<?>getAuthors(@RequestParam(defaultValue = "0") int page,
                                        @RequestParam(required = false, defaultValue = "") String name,
                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate after){
-        return new ResponseEntity<>(authorService.getAllAuthors(page, name, after), HttpStatus.OK);
+        if(!name.isBlank()){
+            return new ResponseEntity<>(authorService.getAuthorByFullName(name), HttpStatus.OK);
+        }
+        if(after != null){
+            return new ResponseEntity<>(authorService.getAuthorCreatedAfter(after), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(authorService.getAllAuthors(page), HttpStatus.OK);
 
 
 
@@ -51,10 +58,9 @@ public class AuthorController {
 
     @GetMapping("/authors/{id}")
     public ResponseEntity<?>findById(@PathVariable Long id){
-        //Optional<Author> author = authorService.getAuthor(id);
-        AuthorDTO authorDTO = authorService.getAuthor(id);
-        if (authorDTO != null){
-            return new ResponseEntity<>(authorDTO, HttpStatus.OK);
+        AuthorDTO author = authorService.getAuthor(id);
+        if (author != null){
+            return new ResponseEntity<>(author, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -73,10 +79,10 @@ public class AuthorController {
 
    @PutMapping("/authors/{id}")
     public ResponseEntity<?> updateAuthor(@PathVariable Long id ,@RequestBody @Valid AuthorDTO authorDTO){
-        AuthorDTO authorDTOAux = authorService.updateAuthor(authorDTO, id);
+        Author author = authorService.updateAuthor(authorDTO, id);
 
-        if(authorDTOAux != null){
-            return new ResponseEntity<>(authorDTOAux, HttpStatus.ACCEPTED);
+        if(author != null){
+            return new ResponseEntity<>(authorConverter.toDto(author), HttpStatus.ACCEPTED);
         }
         else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

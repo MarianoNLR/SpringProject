@@ -45,20 +45,21 @@ public class ArticleController {
 
     @PostMapping("articles/add")
     public ResponseEntity<ArticleDTO>saveArticle(@Valid @RequestBody ArticleDTO articleDTO){
-        return new ResponseEntity<>(articleService.createArticle(articleDTO), HttpStatus.CREATED);
+        Article article = articleService.createArticle(articleDTO);
+        return new ResponseEntity<>(articleConverter.toDto(article), HttpStatus.CREATED);
     }
 
     @GetMapping("articles/{id}")
-    public ResponseEntity<ArticleDTO> getArticleById(@PathVariable Long id){
-        //return ResponseEntity.ok(articleRepository.findById(id));
-        return new ResponseEntity<>(articleService.getArticle(id), HttpStatus.OK);
+    public ResponseEntity<?> getArticleById(@PathVariable Long id){
+        Article article = articleService.getArticle(id);
+        return new ResponseEntity<>(articleConverter.toDto(article), HttpStatus.OK);
     }
 
     @PutMapping("articles/{id}")
     public ResponseEntity<?> updateArticle(@PathVariable Long id,@Valid @RequestBody ArticleDTO articleDTO){
-        ArticleDTO articleDTOAux = articleService.updateArticle(articleDTO, id);
-        if (articleDTOAux != null){
-            return new ResponseEntity<>(articleDTOAux, HttpStatus.ACCEPTED);
+        Article article = articleService.updateArticle(articleDTO, id);
+        if (article != null){
+            return new ResponseEntity<>(articleConverter.toDto(article), HttpStatus.ACCEPTED);
         }else{
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -66,10 +67,6 @@ public class ArticleController {
 
     @DeleteMapping("articles/{id}")
     public ResponseEntity<?> deleteArticle(@PathVariable Long id){
-        if (articleService.deleteArticle(id)){
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        }else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(articleService.deleteArticle(id), HttpStatus.NO_CONTENT);
     }
 }
