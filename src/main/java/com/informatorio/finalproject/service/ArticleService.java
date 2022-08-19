@@ -12,6 +12,7 @@ import com.informatorio.finalproject.entity.Source;
 import com.informatorio.finalproject.repository.ArticleRepository;
 import com.informatorio.finalproject.repository.AuthorRepository;
 import com.informatorio.finalproject.repository.SourceRepository;
+import com.informatorio.finalproject.util.CustomPage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -51,7 +52,7 @@ public class ArticleService {
         this.sourceConverter = sourceConverter;
     }
 
-    public Map<String, Object> getArticles(int page, String q){
+    public CustomPage getArticles(int page, String q){
         PageRequest pageable = PageRequest.of(page, 5);
         Page<Article> pageResult;
         if (!q.isBlank()){
@@ -60,13 +61,15 @@ public class ArticleService {
             pageResult = articleRepository.findAll(pageable);
         }
 
-        Map<String, Object> customPage = new HashMap<>();
-        customPage.put("content", pageResult.getContent().stream()
+        CustomPage customPage = new CustomPage();
+        customPage.setContent(pageResult.getContent().stream()
                 .map(article -> articleConverter.toDto(article))
                 .collect(Collectors.toList()));
-        customPage.put("page", pageResult.getNumber());
-        customPage.put("size", pageResult.getSize());
-        customPage.put("totalElements", pageResult.getTotalElements());
+        customPage.setTotalElements(pageResult.getTotalElements());
+        customPage.setTotalPages(pageResult.getTotalPages());
+        customPage.setSize(pageResult.getSize());
+        customPage.setPageNumber(pageResult.getNumber());
+
 
         return customPage;
     }

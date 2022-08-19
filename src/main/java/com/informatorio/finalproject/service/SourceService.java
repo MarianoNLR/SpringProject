@@ -8,6 +8,7 @@ import com.informatorio.finalproject.entity.Source;
 import com.informatorio.finalproject.repository.ArticleRepository;
 import com.informatorio.finalproject.repository.AuthorRepository;
 import com.informatorio.finalproject.repository.SourceRepository;
+import com.informatorio.finalproject.util.CustomPage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -73,7 +74,7 @@ public class SourceService {
         return null;
     }
 
-    public Map<String ,Object> getAllSources(int page, String name){
+    public CustomPage getAllSources(int page, String name){
 
         PageRequest pageable = PageRequest.of(page, 3);
         Page<Source> pageResult;
@@ -83,14 +84,15 @@ public class SourceService {
             pageResult = sourceRepository.findAll(pageable);
         }
 
-        Map<String, Object> customPage = new HashMap<>();
-        customPage.put("status", HttpStatus.OK);
-        customPage.put("content", pageResult.getContent().stream()
-                .map(article -> sourceConverter.toDto(article))
+        CustomPage customPage = new CustomPage();
+        customPage.setContent(pageResult.getContent().stream()
+                .map(source -> sourceConverter.toDto(source))
                 .collect(Collectors.toList()));
-        customPage.put("page", pageResult.getNumber());
-        customPage.put("size", pageResult.getSize());
-        customPage.put("totalElements", pageResult.getTotalElements());
+        customPage.setTotalElements(pageResult.getTotalElements());
+        customPage.setTotalPages(pageResult.getTotalPages());
+        customPage.setSize(pageResult.getSize());
+        customPage.setPageNumber(pageResult.getNumber());
+
         return customPage;
     }
 
