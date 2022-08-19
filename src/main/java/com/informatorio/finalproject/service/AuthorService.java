@@ -28,10 +28,10 @@ public class AuthorService {
         this.authorConverter = authorConverter;
     }
 
-    public AuthorDTO getAuthor(Long id) {
+    public Author getAuthor(Long id) {
         Optional<Author> author = authorRepository.findById(id);
         //Author authorAux = author.get();
-        return author.map(authorConverter::toDto).orElse(null);
+        return author.get();
     }
 
     public CustomPage getAllAuthors(int page){

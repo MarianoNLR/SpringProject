@@ -58,9 +58,9 @@ public class AuthorController {
 
     @GetMapping("/authors/{id}")
     public ResponseEntity<?>findById(@PathVariable Long id){
-        AuthorDTO author = authorService.getAuthor(id);
+        Author author = authorService.getAuthor(id);
         if (author != null){
-            return new ResponseEntity<>(author, HttpStatus.OK);
+            return new ResponseEntity<>(authorConverter.toDto(author), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
