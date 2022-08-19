@@ -45,10 +45,10 @@ class AuthorServiceTest {
 
     @Test
     void when_call_method_createAuthor_save_ok(){
-        AuthorDTO expected = new AuthorDTO(1L,"Mariano", "Lotero", LocalDate.now());
-        Author simulation = new Author(1L,"Mariano", "Lotero", "Mariano Lotero" ,LocalDate.now());
+        AuthorDTO simulation = new AuthorDTO(1L,"Mariano", "Lotero", LocalDate.now());
+        Author expected = new Author(1L,"Mariano", "Lotero", "Mariano Lotero" ,LocalDate.now());
 
-        when(authorService.createAuthor(expected)).thenReturn(simulation);
+        when(authorService.createAuthor(simulation)).thenReturn(expected);
 
         Author result = authorService.createAuthor(new AuthorDTO(1L, "Mariano", "Lotero", LocalDate.now()));
         assertEquals(simulation.getId(), result.getId());
@@ -64,5 +64,21 @@ class AuthorServiceTest {
         List<Author> response = authorService.getAuthorByFullName("Mariano");
 
         assertIterableEquals(authors, response);
+    }
+
+    @Test
+    void when_method_get_author_return_an_author(){
+        Author author = new Author();
+        author.setId(1L);
+        author.setFirstName("Mariano");
+        author.setLastName("Lotero");
+        author.setFullName("Mariano Lotero");
+        author.setCreatedAt(LocalDate.now());
+
+        when(authorRepository.findById(1L)).thenReturn(Optional.of(author));
+
+        Author response = authorService.getAuthor(1l);
+
+        assertEquals(author,response);
     }
 }
