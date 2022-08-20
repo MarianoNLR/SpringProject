@@ -36,6 +36,7 @@ public class ArticleService {
         this.sourceRepository = sourceRepository;
     }
 
+    //Returning a custom page with articles. if it's necessary filter results
     public CustomPage getArticles(int page, String q){
         PageRequest pageable = PageRequest.of(page, 5);
         Page<Article> pageResult;
@@ -58,11 +59,13 @@ public class ArticleService {
         return customPage;
     }
 
+    //Get an article by id or return null if id doesn't exist
     public Article getArticle(Long id){
         Optional<Article> article = articleRepository.findById(id);
         return article.orElse(null);
     }
 
+    //Method to create an article with sources associated
     public Article createArticle(ArticleDTO articleDTO){
 
         Article article = articleConverter.toEntity(articleDTO);
@@ -79,6 +82,7 @@ public class ArticleService {
 
     }
 
+    //Update an article by put request
     public Article updateArticle(ArticleDTO articleDTO, Long id){
         Optional<Article> article = articleRepository.findById(id);
         if (article.isPresent()){
@@ -95,6 +99,7 @@ public class ArticleService {
         return null;
     }
 
+    //Update an article by patch request
     public Article patchArticle(ArticleDTO articleDTO, Long id){
         Article article = articleRepository.findById(id).orElse(null);
 
@@ -112,6 +117,7 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
+    //Delete an article by id and needs to remove registers associated in intermediate table
     public boolean deleteArticle(Long id){
         Optional<Article> article = articleRepository.findById(id);
         if(article.isPresent()){

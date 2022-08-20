@@ -29,12 +29,14 @@ public class AuthorService {
         this.authorConverter = authorConverter;
     }
 
+    //Get author by id coming from parameter
     public Author getAuthor(Long id) {
         Optional<Author> author = authorRepository.findById(id);
         //Author authorAux = author.get();
         return author.get();
     }
 
+    //Create a custom page with a list of authors and returns it
     public CustomPage getAllAuthors(int page){
         PageRequest pageable = PageRequest.of(page, 5);
         Page<Author> pageResult;
@@ -52,17 +54,19 @@ public class AuthorService {
         return customPage;
     }
 
+    //Getting authors which contains the string coming through parameters
     public List<Author> getAuthorByFullName(String name){
         return authorRepository.findByFullNameContains(name);
 
     }
 
+    //Getting a list of authors which were created after a date coming in parameters
     public List<Author> getAuthorCreatedAfter(LocalDate date){
         return authorRepository.findByCreatedAtAfter(date);
     }
 
 
-
+    //Updating an author by put request
     public Author updateAuthor(AuthorDTO authorDTO, Long id){
         Optional<Author> author = authorRepository.findById(id);
         if(author.isPresent()){
@@ -78,6 +82,7 @@ public class AuthorService {
         return null;
     }
 
+    //Updating an author by patch request
     public Author patchAuthor(AuthorDTO authorDTO, Long id){
         Author author = authorRepository.findById(id).orElse(null);
 
@@ -92,6 +97,7 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
+    //Save an author from an authorDTO
     public Author createAuthor(AuthorDTO authorDTO){
         //this.setFullName(authorDTO);
         authorDTO.setFullName(authorDTO.getFirstName() + " " + authorDTO.getLastName());
@@ -99,6 +105,7 @@ public class AuthorService {
         return author = authorRepository.save(author);
     }
 
+    //Method to set full name of an author by joining first name and last name
     private void setFullName(AuthorDTO authorDTO){
         authorDTO.setFullName(authorDTO.getFirstName() + " " + authorDTO.getLastName());
     }

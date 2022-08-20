@@ -32,7 +32,7 @@ public class SourceService {
     }
 
 
-
+    //Save a Source using a source converter
     public Source saveSource(SourceDTO sourceDTO){
         this.setSourceCode(sourceDTO);
 
@@ -40,6 +40,7 @@ public class SourceService {
         return sourceRepository.save(source);
     }
 
+    //Delete a Source and an Article if it ran out of Sources
     public boolean deleteSource(Long id){
         Source source = sourceRepository.findById(id).get();
         for (Article article : source.getArticles()){
@@ -53,6 +54,7 @@ public class SourceService {
     }
 
 
+    //Update a Source if Entity with id sent is present
     public Source updateSource(SourceDTO sourceDTO, Long id){
         Optional<Source> source = sourceRepository.findById(id);
 
@@ -67,6 +69,8 @@ public class SourceService {
         return null;
     }
 
+
+    //Getting all sources and returning a CustomPage
     public CustomPage getAllSources(int page, String name){
 
         PageRequest pageable = PageRequest.of(page, 5);
@@ -89,6 +93,7 @@ public class SourceService {
         return customPage;
     }
 
+    //Method to set source code as solicited
     private void setSourceCode(SourceDTO sourceDTO){
         sourceDTO.setCode(sourceDTO.getName().toLowerCase().replace(" ", "-"));
     }

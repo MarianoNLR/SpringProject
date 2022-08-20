@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+//A DTO just to show articles just with author's full name and not all properties
 public class ArticleAuthorSimpleDTO {
 
     private long id;
