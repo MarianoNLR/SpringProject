@@ -1,5 +1,6 @@
 package com.informatorio.finalproject.converter;
 
+import com.informatorio.finalproject.dto.ArticleAuthorSimpleDTO;
 import com.informatorio.finalproject.dto.ArticleDTO;
 import com.informatorio.finalproject.entity.Article;
 import com.informatorio.finalproject.entity.Author;
@@ -42,7 +43,8 @@ public class ArticleConverter {
     }
 
     public ArticleDTO toDto(Article article){
-        ArticleDTO articleDTO = new ArticleDTO();;
+        ArticleDTO articleDTO = new ArticleDTO();
+
         articleDTO.setId(article.getId());
         articleDTO.setTitle(article.getTitle());
         articleDTO.setContent(article.getContent());
@@ -53,9 +55,30 @@ public class ArticleConverter {
         Optional<Author> authorOptional = authorRepository.findById(article.getAuthor().getId());
         articleDTO.setAuthor(authorConverter.toDto(authorOptional.get()));
         articleDTO.setSources(article.getSources().stream()
-                .map(source -> sourceConverter.toDto(source))
+                .map(sourceConverter::toDto)
                 .collect(Collectors.toList()));
+
         return articleDTO;
+    }
+
+    public ArticleAuthorSimpleDTO toSimpleAuthorDto(Article article){
+        ArticleAuthorSimpleDTO articleSimpleDTO = new ArticleAuthorSimpleDTO();
+
+        articleSimpleDTO.setId(article.getId());
+        articleSimpleDTO.setTitle(article.getTitle());
+        articleSimpleDTO.setContent(article.getContent());
+        articleSimpleDTO.setDescription(article.getDescription());
+        articleSimpleDTO.setUrl(article.getUrl());
+        articleSimpleDTO.setUrlToImage(article.getUrlToImage());
+        articleSimpleDTO.setPublishedAt(article.getPublishedAt());
+        Optional<Author> authorOptional = authorRepository.findById(article.getAuthor().getId());
+        articleSimpleDTO.setFullName(authorOptional.get().getFullName());
+        articleSimpleDTO.setSources(article.getSources().stream()
+                .map(sourceConverter::toDto)
+                .collect(Collectors.toList()));
+
+        return articleSimpleDTO;
+
     }
 
 }

@@ -1,5 +1,6 @@
 package com.informatorio.finalproject.converter;
 
+import com.informatorio.finalproject.dto.ArticleAuthorSimpleDTO;
 import com.informatorio.finalproject.dto.AuthorDTO;
 import com.informatorio.finalproject.entity.Author;
 import org.springframework.stereotype.Component;
@@ -29,4 +30,5 @@ public class AuthorConverter {
         //authorDTO.setArticles(author.getArticles());
         return authorDTO;
     }
+
 }

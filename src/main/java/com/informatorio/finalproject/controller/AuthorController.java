@@ -9,13 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @RequestMapping("/api/v1")
@@ -35,7 +32,7 @@ public class AuthorController {
     }
 
     @PostMapping("/authors")
-    public ResponseEntity<?> createAuthor(@Valid @RequestBody AuthorDTO authorDTO){
+    public ResponseEntity<?> createAuthor(@Valid @RequestBody AuthorDTO authorDTO) {
 
         return new ResponseEntity<>(authorService.createAuthor(authorDTO), HttpStatus.CREATED);
     }
@@ -43,14 +40,13 @@ public class AuthorController {
     @PatchMapping("/authors/{id}")
     public ResponseEntity<?>patchAuthor(@PathVariable Long id, @RequestBody AuthorDTO authorDTO){
         Author author = authorService.patchAuthor(authorDTO, id);
-
         return new ResponseEntity<>(authorConverter.toDto(author), HttpStatus.OK);
     }
 
     @GetMapping("/authors")
     public ResponseEntity<?>getAuthors(@RequestParam(defaultValue = "0") int page,
                                        @RequestParam(required = false, defaultValue = "") String name,
-                                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate after){
+                                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate after) {
         if(!name.isBlank()){
             return new ResponseEntity<>(authorService.getAuthorByFullName(name), HttpStatus.OK);
         }
@@ -95,13 +91,5 @@ public class AuthorController {
         else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
     }
-
-
-
-    /*@RequestMapping(value = "/authors", method = RequestMethod.GET)
-    public @ResponseBody Iterable<Author> findAuthor(){
-        return authorRepository.findAll();
-    }*/
 }

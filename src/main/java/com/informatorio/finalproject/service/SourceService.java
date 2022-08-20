@@ -4,6 +4,7 @@ import com.informatorio.finalproject.converter.SourceConverter;
 import com.informatorio.finalproject.dto.SourceDTO;
 import com.informatorio.finalproject.entity.Article;
 import com.informatorio.finalproject.entity.Source;
+import com.informatorio.finalproject.repository.ArticleRepository;
 import com.informatorio.finalproject.repository.SourceRepository;
 import com.informatorio.finalproject.util.CustomPage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,13 @@ public class SourceService {
 
     private final SourceConverter sourceConverter;
 
+    private final ArticleRepository articleRepository;
+
     @Autowired
-    public SourceService(SourceRepository sourceRepository, SourceConverter sourceConverter) {
+    public SourceService(SourceRepository sourceRepository, SourceConverter sourceConverter, ArticleRepository articleRepository) {
         this.sourceRepository = sourceRepository;
         this.sourceConverter = sourceConverter;
+        this.articleRepository = articleRepository;
     }
 
 
@@ -40,6 +44,9 @@ public class SourceService {
         Source source = sourceRepository.findById(id).get();
         for (Article article : source.getArticles()){
             article.getSources().remove(source);
+            if(article.getSources().isEmpty()){
+                articleRepository.deleteById(article.getId());
+            }
         }
         sourceRepository.deleteById(id);
         return true;

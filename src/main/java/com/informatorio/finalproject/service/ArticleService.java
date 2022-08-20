@@ -47,7 +47,7 @@ public class ArticleService {
 
         CustomPage customPage = new CustomPage();
         customPage.setContent(pageResult.getContent().stream()
-                .map(articleConverter::toDto)
+                .map(articleConverter::toSimpleAuthorDto)
                 .collect(Collectors.toList()));
         customPage.setTotalElements(pageResult.getTotalElements());
         customPage.setTotalPages(pageResult.getTotalPages());
